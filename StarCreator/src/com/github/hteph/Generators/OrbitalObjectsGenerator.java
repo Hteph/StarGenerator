@@ -69,35 +69,39 @@ public class OrbitalObjectsGenerator  {
 			
 			//Detailed bodies
 			
-			for(int i=0;i<numberOfOrbits;i++){
-				switch (orbitalObjectBasicList[i]) {
-				case value:
-					
-					break;
-				case value:
-					
-					break;
-				case value:
-					
-					break;
-				case value:
-					
-					break;
-				case value:
-					
-					break;
-				default:
-					//Do nothing (probably 'E')
-					break;
-				}
+//			for(int i=0;i<numberOfOrbits;i++){
+//				switch (orbitalObjectBasicList[i]) {
+//				case value:
+//					
+//					break;
+//				case value:
+//					
+//					break;
+//				case value:
+//					
+//					break;
+//				case value:
+//					
+//					break;
+//				case value:
+//					
+//					break;
+//				default:
+//					//Do nothing (probably 'E')
+//					break;
+//				}
+			
+			return null;
 			}
 			
 			
 			
 			
 
-			return orbitalObjectList;
-		}
+	//		return orbitalObjectList;
+	
+
+
 // internal methods
 		private char generateOuterObject() {
 
