@@ -5,7 +5,7 @@ import com.github.hteph.ObjectsOfAllSorts.StellarObject;
 import com.github.hteph.Utilities.Dice;
 
 import java.text.DecimalFormat;
-
+import java.util.Arrays;
 
 public class StarGenerator {
 	
@@ -20,7 +20,7 @@ public class StarGenerator {
 	public StellarObject Generator(){
 	
 	int testDice =Dice.d6()+Dice.d6()+Dice.d6()-3;
-	double randN =testDice/15.0+Math.random()/10; //turning the dice roll into a continous sligthly pushed randomnumber.
+	double randN =testDice/15.0+Math.random()/10; //turning the dice roll into a continous sligthly skewed randomnumber.
 	
 	
 	mass = 0.04/(0.015+Math.pow(randN,4)); // <-----------------------------------------MOST IMPORTANT STARTING POINT
@@ -35,7 +35,7 @@ public class StarGenerator {
 	diameter *= Math.pow(halfAgeBalance, 0.33);
 	
 		
-	classification = findStarClass(temperature, mass);
+	classification = findStarClass(temperature);
 	
 	DecimalFormat df = new DecimalFormat("#.####");
 	System.out.println( "StarGenerator [lumosity=" + df.format(lumosity) + ", mass=" + df.format(mass) + ", diameter=" + df.format(diameter) + ", classification="
@@ -45,58 +45,21 @@ public class StarGenerator {
 	return star;
 	}
 	
-	// Sub methods ---------------------------------------------------------------------------------
-	private String findStarClass(double temperature, double mass){
-		String starClass = null;
-		char classificationLetter;
+//Inner Methods	-------------------------------------------------------------------------------
+	private String findStarClass(int temperature){
 		
-		if(temperature<3500 && mass < 0.08){
-			
-			starClass = "L";
-		} else if(temperature<500)  {
-			starClass = "Y";
-			
-		} else if(temperature<1300){
-			starClass = "T";
-			
-		} else if(temperature<3700){
-			classificationLetter = 'M';
-			int decimal=(int)(10-(temperature-1300)/(3700-1300)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else if(temperature<5200){
-			classificationLetter = 'K';
-			int decimal=(int)(10-(temperature-3700)/(5200-3700)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else if(temperature<6000){
-			classificationLetter = 'G';
-			int decimal=(int)(10-(temperature-5200)/(6000-5200)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else if(temperature<7500){
-			classificationLetter = 'F';
-			int decimal=(int)(10-(temperature-6000)/(7500-6000)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else if(temperature<10000){
-			classificationLetter = 'A';
-			int decimal=(int)(10-(temperature-7500)/(10000-7500)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else if(temperature<30000){
-			classificationLetter = 'B';
-			int decimal=(int)(10-(temperature-10000)/(30000-10000)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}else{
-			classificationLetter = 'O';
-			int decimal=(int)(10-(temperature-30000)/(60000-30000)*10);
-			String numeral = "V";
-			starClass= Character.toString(classificationLetter) + Integer.toString(decimal)+" "+numeral;
-		}
+		String[] classLetter ={"Y","T","M","K","G","F","A","B","O"};
+		int[] temperatureClass = {500,1300,3700,5200,6000,7500,10000,30000,100000};
+		int decimal;
 				
-		return starClass;		
+		int retValue =  Arrays.binarySearch(temperatureClass,temperature);
+		
+		if(retValue<0) decimal = (int) (10.0*(temperature-temperatureClass[-retValue-1])/(1.0*temperatureClass[-retValue]-temperatureClass[-retValue-1]));
+		else decimal = 0;
+		
+		
+		return classLetter[-retValue-1]+decimal+" V";
+		}
+		
 	}
 
-}
