@@ -25,7 +25,7 @@ public class StarGenerator {
 	
 	mass = 0.04/(0.015+Math.pow(randN,4)); // <-----------------------------------------MOST IMPORTANT STARTING POINT
 	diameter= Math.pow(mass,0.67);
-	temperature = (int)((100*Math.round(380+4800*Math.pow(mass, 0.5))/100)*(0.8+Math.random()*0.4));	
+	temperature = 100*(int)((100*Math.round(380+4800*Math.pow(mass, 0.5))/100)*(0.8+Math.random()*0.4)/100);	
 	lumosity = Math.pow(mass, 3.5);
 	double inverseMass=1/mass;
 	double maxAge =10*Math.pow(inverseMass, 2.5);
@@ -49,16 +49,20 @@ public class StarGenerator {
 	private String findStarClass(int temperature){
 		
 		String[] classLetter ={"Y","T","M","K","G","F","A","B","O"};
-		int[] temperatureClass = {500,1300,3700,5200,6000,7500,10000,30000,100000};
+		int[] temperatureClass = {500,1300,2400,3700,5200,6000,7500,10000,30000,100000};
 		int decimal;
-				
+		String classification;
+		
 		int retValue =  Arrays.binarySearch(temperatureClass,temperature);
 		
-		if(retValue<0) decimal = (int) (10.0*(temperature-temperatureClass[-retValue-1])/(1.0*temperatureClass[-retValue]-temperatureClass[-retValue-1]));
+		if(retValue<0) decimal =10- (int) (10.0*(temperature-temperatureClass[-retValue-2])/(1.0*temperatureClass[-retValue-1]-temperatureClass[-retValue-2]));
 		else decimal = 0;
+
+		if(retValue<0) classification = classLetter[-retValue-2]+decimal+" V";
+		else classification = classLetter[retValue]+decimal+" V";
 		
 		
-		return classLetter[-retValue-1]+decimal+" V";
+		return classLetter[-retValue-2]+decimal+" V";
 		}
 		
 	}

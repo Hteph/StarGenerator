@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jscience.physics.amount.Amount;
-
 import com.github.hteph.ObjectsOfAllSorts.AmosphericGases;
 import com.github.hteph.ObjectsOfAllSorts.Planet;
 import com.github.hteph.ObjectsOfAllSorts.Star;
