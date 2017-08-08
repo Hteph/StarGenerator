@@ -54,8 +54,7 @@ public class GenerateTerrestrialPlanet {
 	private String lifeType;
 
 
-	public Planet Generator(String name, String description, double orbitDistance, double orbitaleccentricity,
-			char orbitalObjectClass, Star orbitingAround) {
+	public Planet Generator(String name, String description, double orbitDistance, char orbitalObjectClass, Star orbitingAround) {
 		
 		Planet planet = new Planet ("Something", "SomethingSomething");
 
@@ -89,15 +88,17 @@ public class GenerateTerrestrialPlanet {
 		if(orbitalObjectClass=='C') eccentryMod=3;
 		eccentricity=eccentryMod*(Dice.d6()-1)*(Dice.d6()-1)/(100*Dice.d6());
 		axialTilt = (Dice.d6()-1)+(Dice.d6()-1)/Dice.d6();
-		orbitalInclination = eccentryMod*(Dice.d6()+Dice.d6())/(1+mass/10);		
+		orbitalInclination = eccentryMod*(Dice.d6()+Dice.d6())/(1+mass/10);	
 		
-
+		planet.setEccentricity(eccentricity);
+		planet.setAxialTilt(axialTilt);
+		planet.setOrbitalInclination(orbitalInclination);
+		
 // TODO tidelocked or not should take into consideration moons too, generate moons here!
 
 		double tidalForce = orbitingAround.getMass()*26640000/Math.pow(orbitDistance*400,3);
 		double tidelock = (0.83+(Dice.d6()+Dice.d6()-2)*0.03)*tidalForce*orbitingAround.getAge()/6.6;
 		if(tidelock>1) tidelocked=true;
-
 
 //Rotation - day/night cycle
 		if(tidelocked){
@@ -107,8 +108,8 @@ public class GenerateTerrestrialPlanet {
 			if(Dice.d6()<2) rotationalPeriod=Math.pow(rotationalPeriod,Dice.d6());
 		}
 		
+		planet.setRotationalPeriod(rotationalPeriod);
 		
-
 //TODO tectonics should include moons!
 
 		tectonicCore = findTectonicGroup();
