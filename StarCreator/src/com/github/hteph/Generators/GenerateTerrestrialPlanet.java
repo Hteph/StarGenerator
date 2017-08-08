@@ -22,7 +22,7 @@ public class GenerateTerrestrialPlanet {
 	private double radius;
 	private double gravity;
 	private double density;
-	private double orbitalPeriod;
+	private double orbitalPeriod; //in earth years
 	private double axialTilt;
 	private double eccentricity;
 	private boolean tidelocked = false;
@@ -75,7 +75,7 @@ public class GenerateTerrestrialPlanet {
 		}
 		mass =Math.pow(radius/6380,3)*density;
 		gravity = mass/Math.pow((radius/6380),2);
-		orbitalPeriod = Math.pow(Math.pow(orbitDistance,3)/orbitingAround.getMass(),0.5);
+		orbitalPeriod = Math.pow(Math.pow(orbitDistance,3)/orbitingAround.getMass(),0.5); //in earth years
 
 // TODO tidelocked or not should take into consideration moons too, generate moons here!
 
@@ -143,13 +143,10 @@ public class GenerateTerrestrialPlanet {
 
 		surfaceTemp = baseTemperature * albedo  * greenhouseFactor;
 
-
-
 		if(hasGaia && lifeType.equals("Oxygen Breathing")) adjustForOxygen();
 
-
-
-		rangeBandTemperature = findRangeBand();
+//Climate
+		setAllKindOfLocalTemperature(); // sets all the temperature stuff from axial tilt etc etc
 
 
 // and here we return the result		
@@ -178,7 +175,7 @@ public class GenerateTerrestrialPlanet {
 //If we didn't find CO2, find a gas that is of lower percentage than max oxygen.
 		if(!substitutionMade){
 			
-			//sortering av atmosphere composition
+			//sorting of atmosphere composition
 			atmoshericComposition.sort(Comparator.comparing(AmosphericGases::getPercentageInAtmo));
 			int n=0;
 
@@ -213,20 +210,71 @@ public class GenerateTerrestrialPlanet {
 		return tempLifeType;
 	}
 
-
-	private double[] findRangeBand() {
-
+/**
+ * Method to set the temperature of the latitude range bands and the day/night variation
+ */
+	
+	//TODO great season variations from the orbital eccentricity and multiple stars system
+	
+	private void setAllKindOfLocalTemperature() {
+		
+		double[][] temperatureRangeBand= new double[][]{ // First is Low Moderation atmos, then Average etc
+			{1.10, 1.07, 1.5, 1.03, 1.00, 0.97, 0.93, 0.87, 0.78, 0.68},
+			{1.05, 1.04, 1.03, 1.02, 1.00, 0.98, 0.95, 0.90, 0.82, 0.75},
+			{1.02, 1.02, 1.02, 1.01, 1.00, 0.99, 0.98, 0.95, 0.91, 0.87}
+		};
+		
+		double[] summerTemperature = new double[10];
+		double[] winterTemperature = new double[10];
+		double[] latitudeTemperature = new double[10];
+		int index = 0;
 		int testModeration=0;
-		testModeration = (int) ((hydrosphere -60)/10.0);
+		
+		
+		
+		
+		testModeration = (int) ((hydrosphere -60)/10);
 		testModeration =(atmoPressure<0.1)?-3:1;
 		testModeration =(int) atmoPressure;
 		testModeration =(rotationalPeriod<10)?-3:1;
-		testModeration =(int) (Math.sqrt(rotationalPeriod/24.0));
-		testModeration =(int) (10.0/axialTilt);
+		testModeration =(int) (Math.sqrt(rotationalPeriod/24));
+		testModeration =(int) (10/axialTilt);
 
 		atmoModeration = (testModeration<-2)?"Low":"Average";
 		atmoModeration = (testModeration>2)?"High":"Average";
-		return null;
+		if(atmoPressure==0)atmoModeration="No";
+		
+		if(atmoModeration.equals("High")) index =2;
+		else if(atmoModeration.equals("Average")) index =1;
+		else index = 0;
+		
+		for(int i=0;i<10;i++){
+			latitudeTemperature[i] = temperatureRangeBand[index][i]*surfaceTemp;
+		}
+		
+		for(int i=0;i<10;i++){
+			
+			double seasonEffect = 1;
+			int axialTiltEffect = (int) (axialTilt/10);
+			int summer = Math.max(0, i-axialTiltEffect);
+			int winter =Math.min(9, i+axialTiltEffect);
+			
+			if(i<3 && axialTiltEffect<4) seasonEffect *= 0.75;
+			if(i>8 && axialTiltEffect>3) seasonEffect *= 2;
+			if(orbitalPeriod<0.25 && !atmoModeration.equals("Low"))	seasonEffect *= 0.75;
+			if(orbitalPeriod>3 && !atmoModeration.equals("High") && axialTilt>40)	seasonEffect *= 1.5;
+			
+			summerTemperature[i]=(latitudeTemperature[summer]-latitudeTemperature[i])*seasonEffect;
+			winterTemperature[i]=(latitudeTemperature[winter]-latitudeTemperature[i])*seasonEffect;
+		}
+		
+		
+		
+		 rangeBandTemperature =latitudeTemperature;
+		 rangeBandTempSummer =summerTemperature;
+		 rangeBandTempWinter =winterTemperature;
+		
+
 	}
 
 	private boolean testLife() {

@@ -24,7 +24,7 @@ public class StarGenerator {
 	
 	
 	mass = 0.04/(0.015+Math.pow(randN,4)); // <-----------------------------------------MOST IMPORTANT STARTING POINT
-	diameter= Math.pow(mass,0.67);
+	diameter= Math.pow(mass,2/3.0);
 	temperature = 100*(int)((100*Math.round(380+4800*Math.pow(mass, 0.5))/100)*(0.8+Math.random()*0.4)/100);	
 	lumosity = Math.pow(mass, 3.5);
 	double inverseMass=1/mass;
@@ -32,7 +32,7 @@ public class StarGenerator {
 	age = (0.3+Math.random()*0.6)*Math.min(maxAge,13);
 	double halfAgeBalance=2*age/maxAge;
 	lumosity *= Math.pow(halfAgeBalance, 0.5);
-	diameter *= Math.pow(halfAgeBalance, 0.33);
+	diameter *= Math.pow(halfAgeBalance, 1/3.0);
 	
 		
 	classification = findStarClass(temperature);
