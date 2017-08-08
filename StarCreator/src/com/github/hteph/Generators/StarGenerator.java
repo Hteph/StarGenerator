@@ -20,7 +20,7 @@ public class StarGenerator {
 	public StellarObject Generator(){
 	
 	int testDice =Dice.d6()+Dice.d6()+Dice.d6()-3;
-	double randN =testDice/15.0+Math.random()/10; //turning the dice roll into a continous sligthly skewed randomnumber.
+	double randN =testDice/(15.0+Math.random()/10); //turning the dice roll into a continous sligthly skewed randomnumber.
 	
 	
 	mass = 0.04/(0.015+Math.pow(randN,4)); // <-----------------------------------------MOST IMPORTANT STARTING POINT
@@ -55,14 +55,17 @@ public class StarGenerator {
 		
 		int retValue =  Arrays.binarySearch(temperatureClass,temperature);
 		
-		if(retValue<0) decimal =10- (int) (10.0*(temperature-temperatureClass[-retValue-2])/(1.0*temperatureClass[-retValue-1]-temperatureClass[-retValue-2]));
+		if(retValue<0) decimal =Math.min(9, 10- (int) (10.0*(temperature-temperatureClass[-retValue-2])/(1.0*temperatureClass[-retValue-1]-temperatureClass[-retValue-2])));
 		else decimal = 0;
 
 		if(retValue<0) classification = classLetter[-retValue-2]+decimal+" V";
 		else classification = classLetter[retValue]+decimal+" V";
 		
 		
-		return classLetter[-retValue-2]+decimal+" V";
+		return classification;
+		
+		
+		
 		}
 		
 	}

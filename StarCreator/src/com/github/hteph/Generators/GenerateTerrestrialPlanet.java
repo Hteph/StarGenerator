@@ -56,6 +56,8 @@ public class GenerateTerrestrialPlanet {
 
 	public Planet Generator(String name, String description, double orbitDistance, double orbitaleccentricity,
 			char orbitalObjectClass, Star orbitingAround) {
+		
+		Planet planet = new Planet ("Something", "SomethingSomething");
 
 		double snowLine = 5 * Math.pow(orbitingAround.getLumosity(), 0.5);
 		if(orbitDistance<snowLine) InnerZone=true;
@@ -76,6 +78,19 @@ public class GenerateTerrestrialPlanet {
 		mass =Math.pow(radius/6380,3)*density;
 		gravity = mass/Math.pow((radius/6380),2);
 		orbitalPeriod = Math.pow(Math.pow(orbitDistance,3)/orbitingAround.getMass(),0.5);
+		
+		planet.setMass(mass);
+		planet.setGravity(gravity);
+		planet.setOrbitalPeriod(orbitalPeriod);
+		
+//Eccentricity and Inclination
+
+		int eccentryMod=1;
+		if(orbitalObjectClass=='C') eccentryMod=3;
+		eccentricity=eccentryMod*(Dice.d6()-1)*(Dice.d6()-1)/(100*Dice.d6());
+		axialTilt = (Dice.d6()-1)+(Dice.d6()-1)/Dice.d6();
+		orbitalInclination = eccentryMod*(Dice.d6()+Dice.d6())/(1+mass/10);		
+		
 
 // TODO tidelocked or not should take into consideration moons too, generate moons here!
 
@@ -84,15 +99,6 @@ public class GenerateTerrestrialPlanet {
 		if(tidelock>1) tidelocked=true;
 
 
-
-//Eccentricity and Inclination
-
-		int eccentryMod=1;
-		if(orbitalObjectClass=='C') eccentryMod=3;
-		eccentricity=eccentryMod*(Dice.d6()-1)*(Dice.d6()-1)/(100*Dice.d6());
-		axialTilt = (Dice.d6()-1)+(Dice.d6()-1)/Dice.d6();
-		orbitalInclination = eccentryMod*(Dice.d6()+Dice.d6())/(1+mass/10);
-
 //Rotation - day/night cycle
 		if(tidelocked){
 			rotationalPeriod=orbitalPeriod*365;
@@ -100,6 +106,8 @@ public class GenerateTerrestrialPlanet {
 			rotationalPeriod = (Dice.d6()+Dice.d6()+8)*(1+0.1*(tidalForce*orbitingAround.getAge()-Math.pow(mass, 0.5)));
 			if(Dice.d6()<2) rotationalPeriod=Math.pow(rotationalPeriod,Dice.d6());
 		}
+		
+		
 
 //TODO tectonics should include moons!
 
@@ -152,8 +160,9 @@ public class GenerateTerrestrialPlanet {
 		rangeBandTemperature = findRangeBand();
 
 
-// and here we return the result		
-		return null;
+// and here we return the result	
+		
+		return planet;
 	}
 // Inner methods -------------------------------------------------------------------------------------------------	
 
