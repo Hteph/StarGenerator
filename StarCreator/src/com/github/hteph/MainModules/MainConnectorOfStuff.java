@@ -10,6 +10,7 @@ public class MainConnectorOfStuff {
 		
 		StarGenerator testGenerator = new StarGenerator();
 		
+		
 		StellarObject test = testGenerator.Generator();
 		
 		System.out.println(test.toString());
