@@ -7,7 +7,7 @@ public class Planet {
 	private String name;
 	private String description;
 	private double mass;
-	private double radius;
+	private int radius;
 	private double gravity;
 	private double density;
 	private double orbitalPeriod;
@@ -16,29 +16,30 @@ public class Planet {
 	private boolean tidelocked = false;
 	private double rotationalPeriod;
 	private String geoComposition;
-	private double tectonicActivity;
+
 	private String tectonicCore;
 	private double magneticField;
-	private int baseTemperature;
+
 	private String hydrosphereDescription;
 	private int hydrosphere;
-	private int waterVaporFactor;
+
 	private ArrayList<AmosphericGases> atmoshericComposition = new ArrayList<AmosphericGases>();
 	private double atmoPressure;
-	private double albedo;
-	private double greenhouseFactor;
-	private double surfaceTemp;
-	private String atmoModeration ="Average";
+
+
+	private int surfaceTemp;
+
 	private double[] rangeBandTemperature =new double[10];
 	private double[] rangeBandTempSummer =new double[10];
 	private double[] rangeBandTempWinter =new double[10];
+	
 	private double nightTempMod;
 	private double dayTempMod;
-	private boolean InnerZone = false;
+
 	private String tectonicActivityGroup;
 	private double orbitalInclination;
 	private boolean boilingAtmo =false;
-	private boolean hasGaia;
+
 	private String lifeType;
 
 	// Constructor ----------------------------------------------
@@ -48,16 +49,25 @@ public class Planet {
 		
 	}
 	//Methods --------------------------------------------------
+	
+	@Override
+	public String toString() {
+		return "Planet " + name + ": " + description + ", radius=" + radius
+				+ ", hydrosphereDescription=" + hydrosphereDescription +", hydro%="+hydrosphere+ ", pressure="
+				+ atmoPressure + ",\n surfaceTemp=" + surfaceTemp + ", lifeType=" + lifeType + "\n Atmo"+atmoshericComposition.toString();
+	}	
 
 	//Internal Methods ----------------------------------------
 
 	// Getters and Setters -------------------------------------
-	
-
 
 	public double getMass() {
 		return mass;
 	}
+
+
+
+
 
 	public void setMass(double mass) {
 		this.mass = mass;
@@ -67,7 +77,7 @@ public class Planet {
 		return radius;
 	}
 
-	public void setRadius(double radius) {
+	public void setRadius(int radius) {
 		this.radius = radius;
 	}
 
@@ -135,13 +145,7 @@ public class Planet {
 		this.geoComposition = geoComposition;
 	}
 
-	public double getTectonicActivity() {
-		return tectonicActivity;
-	}
 
-	public void setTectonicActivity(double tectonicActivity) {
-		this.tectonicActivity = tectonicActivity;
-	}
 
 	public String getTectonicCore() {
 		return tectonicCore;
@@ -159,13 +163,7 @@ public class Planet {
 		this.magneticField = magneticField;
 	}
 
-	public int getBaseTemperature() {
-		return baseTemperature;
-	}
-
-	public void setBaseTemperature(int baseTemperature) {
-		this.baseTemperature = baseTemperature;
-	}
+	
 
 	public String getHydrosphereDescription() {
 		return hydrosphereDescription;
@@ -183,13 +181,7 @@ public class Planet {
 		this.hydrosphere = hydrosphere;
 	}
 
-	public int getWaterVaporFactor() {
-		return waterVaporFactor;
-	}
-
-	public void setWaterVaporFactor(int waterVaporFactor) {
-		this.waterVaporFactor = waterVaporFactor;
-	}
+	
 
 	public ArrayList<AmosphericGases> getAtmoshericComposition() {
 		return atmoshericComposition;
@@ -207,38 +199,17 @@ public class Planet {
 		this.atmoPressure = atmoPressure;
 	}
 
-	public double getAlbedo() {
-		return albedo;
-	}
-
-	public void setAlbedo(double albedo) {
-		this.albedo = albedo;
-	}
-
-	public double getGreenhouseFactor() {
-		return greenhouseFactor;
-	}
-
-	public void setGreenhouseFactor(double greenhouseFactor) {
-		this.greenhouseFactor = greenhouseFactor;
-	}
+	
 
 	public double getSurfaceTemp() {
 		return surfaceTemp;
 	}
 
-	public void setSurfaceTemp(double surfaceTemp) {
+	public void setSurfaceTemp(int surfaceTemp) {
 		this.surfaceTemp = surfaceTemp;
 	}
 
-	public String getAtmoModeration() {
-		return atmoModeration;
-	}
-
-	public void setAtmoModeration(String atmoModeration) {
-		this.atmoModeration = atmoModeration;
-	}
-
+	
 	public double[] getRangeBandTemperature() {
 		return rangeBandTemperature;
 	}
@@ -279,13 +250,7 @@ public class Planet {
 		this.dayTempMod = dayTempMod;
 	}
 
-	public boolean isInnerZone() {
-		return InnerZone;
-	}
-
-	public void setInnerZone(boolean innerZone) {
-		InnerZone = innerZone;
-	}
+	
 
 	public String getTectonicActivityGroup() {
 		return tectonicActivityGroup;
@@ -311,13 +276,6 @@ public class Planet {
 		this.boilingAtmo = boilingAtmo;
 	}
 
-	public boolean isHasGaia() {
-		return hasGaia;
-	}
-
-	public void setHasGaia(boolean hasGaia) {
-		this.hasGaia = hasGaia;
-	}
 
 	public String getLifeType() {
 		return lifeType;

@@ -29,4 +29,11 @@ public class AmosphericGases {
 	}
 
 
+	@Override
+	public String toString() {
+		String atmoString= name + " = " + percentageInAtmo + " %";
+		return atmoString;
+	}
+
+
 }
