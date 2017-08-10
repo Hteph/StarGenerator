@@ -27,7 +27,6 @@ public class GenerateTerrestrialPlanet {
 	private double eccentricity;
 	private boolean tidelocked = false;
 	private double rotationalPeriod;
-	private String geoComposition;
 	private double tectonicActivity;
 	private String tectonicCore;
 	private double magneticField;
@@ -60,7 +59,8 @@ public class GenerateTerrestrialPlanet {
 
 		double snowLine = 5 * Math.pow(orbitingAround.getLumosity(), 0.5);
 		if(orbitDistance<snowLine) InnerZone=true;
-
+		planet.setOrbitDistance(orbitDistance);
+		
 // size may not be all, but here it is set
 
 		int a=900;
@@ -228,8 +228,7 @@ public class GenerateTerrestrialPlanet {
 					atmoshericComposition.get(i).setPercentageInAtmo(atmoshericComposition.get(i).getPercentageInAtmo()-oxygenMax);
 					substitutionMade=true;
 				}
-			}
-			
+			}			
 		}
 
 //if CO2 didn't exists take largest and use a piece of that		
@@ -237,9 +236,7 @@ public class GenerateTerrestrialPlanet {
 			atmoshericComposition.add(new AmosphericGases("O2",(int) oxygenMax));
 			atmoshericComposition.get(0).setPercentageInAtmo(atmoshericComposition.get(0).getPercentageInAtmo()-oxygenMax);
 		}
-
 	}
-
 
 	private String findLifeType() {
 		String tempLifeType = "Oxygen Breathing";
@@ -248,7 +245,6 @@ public class GenerateTerrestrialPlanet {
 			else if(atmoshericComposition.get(i).getName().equals("F2")) tempLifeType = "Flouride Breathing";
 			else if(atmoshericComposition.get(i).getName().equals("Cl2")) tempLifeType = "Cloride Breathing";
 		}
-
 		return tempLifeType;
 	}
 

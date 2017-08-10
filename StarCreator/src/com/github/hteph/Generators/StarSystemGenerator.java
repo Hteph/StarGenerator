@@ -7,7 +7,7 @@ import com.github.hteph.ObjectsOfAllSorts.Star;
 import com.github.hteph.ObjectsOfAllSorts.StellarObject;
 import com.github.hteph.Utilities.Dice;
 
-public class OrbitalObjectsGenerator  {
+public class StarSystemGenerator  {
 
 
 
@@ -20,7 +20,9 @@ public class OrbitalObjectsGenerator  {
 		double outerHabitable = 1.3 * Math.pow(star.getLumosity(), 0.5);
 		double snowLine = 5 * Math.pow(star.getLumosity(), 0.5);
 		double outerLimit = 40 * star.getMass();
-		ArrayList<StellarObject> orbitalObjectList = new ArrayList<>();
+		ArrayList<StellarObject> starSystemList = new ArrayList<>();
+		
+		starSystemList.add(0,star);
 
 		//how many orbits?
 		int numberOfOrbits = Dice.d6()+Dice.d6();

@@ -41,7 +41,15 @@ public class StarGenerator {
 	System.out.println( "StarGenerator [lumosity=" + df.format(lumosity) + ", mass=" + df.format(mass) + ", diameter=" + df.format(diameter) + ", classification="
 				+ classification + ", age=" + df.format(age) + ", temperature=" + temperature + "]");
 	
-	StellarObject star = new Star("Random Name", "Standard text", lumosity, mass, diameter, classification, age);
+	int abundance;
+	int[] abundanceArray = new int[] {0,10,13,19,22};
+	int retVal = Arrays.binarySearch(abundanceArray, (int) (Dice.d10()+Dice.d10()+age));
+
+	if(retVal<0) abundance = 2-retVal+1;
+	else abundance = 2-retVal;
+	
+	
+	StellarObject star = new Star("Random Name", "Standard text", lumosity, mass, diameter, classification, age, abundance);
 	return star;
 	}
 	

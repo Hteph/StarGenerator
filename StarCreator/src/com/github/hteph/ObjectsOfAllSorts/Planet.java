@@ -3,7 +3,7 @@ package com.github.hteph.ObjectsOfAllSorts;
 import java.util.ArrayList;
 
 public class Planet {
-	
+
 	private String name;
 	private String description;
 	private double mass;
@@ -13,29 +13,22 @@ public class Planet {
 	private double orbitalPeriod;
 	private double axialTilt;
 	private double eccentricity;
-	private boolean tidelocked = false;
+	private boolean tidelocked;
 	private double rotationalPeriod;
-	private String geoComposition;
+	private double orbitDistance;
 
 	private String tectonicCore;
 	private double magneticField;
-
 	private String hydrosphereDescription;
 	private int hydrosphere;
-
 	private ArrayList<AmosphericGases> atmoshericComposition = new ArrayList<AmosphericGases>();
 	private double atmoPressure;
-
-
 	private int surfaceTemp;
-
 	private double[] rangeBandTemperature =new double[10];
 	private double[] rangeBandTempSummer =new double[10];
 	private double[] rangeBandTempWinter =new double[10];
-	
 	private double nightTempMod;
 	private double dayTempMod;
-
 	private String tectonicActivityGroup;
 	private double orbitalInclination;
 	private boolean boilingAtmo =false;
@@ -46,10 +39,10 @@ public class Planet {
 	public Planet(String name, String description) {
 		this.name = name;
 		this.description = description;
-		
+
 	}
 	//Methods --------------------------------------------------
-	
+
 	@Override
 	public String toString() {
 		return "Planet " + name + ": " + description + ", radius=" + radius
@@ -64,10 +57,6 @@ public class Planet {
 	public double getMass() {
 		return mass;
 	}
-
-
-
-
 
 	public void setMass(double mass) {
 		this.mass = mass;
@@ -137,16 +126,6 @@ public class Planet {
 		this.rotationalPeriod = rotationalPeriod;
 	}
 
-	public String getGeoComposition() {
-		return geoComposition;
-	}
-
-	public void setGeoComposition(String geoComposition) {
-		this.geoComposition = geoComposition;
-	}
-
-
-
 	public String getTectonicCore() {
 		return tectonicCore;
 	}
@@ -162,8 +141,6 @@ public class Planet {
 	public void setMagneticField(double magneticField) {
 		this.magneticField = magneticField;
 	}
-
-	
 
 	public String getHydrosphereDescription() {
 		return hydrosphereDescription;
@@ -181,8 +158,6 @@ public class Planet {
 		this.hydrosphere = hydrosphere;
 	}
 
-	
-
 	public ArrayList<AmosphericGases> getAtmoshericComposition() {
 		return atmoshericComposition;
 	}
@@ -199,7 +174,7 @@ public class Planet {
 		this.atmoPressure = atmoPressure;
 	}
 
-	
+
 
 	public double getSurfaceTemp() {
 		return surfaceTemp;
@@ -209,7 +184,7 @@ public class Planet {
 		this.surfaceTemp = surfaceTemp;
 	}
 
-	
+
 	public double[] getRangeBandTemperature() {
 		return rangeBandTemperature;
 	}
@@ -250,7 +225,7 @@ public class Planet {
 		this.dayTempMod = dayTempMod;
 	}
 
-	
+
 
 	public String getTectonicActivityGroup() {
 		return tectonicActivityGroup;
@@ -284,6 +259,14 @@ public class Planet {
 	public void setLifeType(String lifeType) {
 		this.lifeType = lifeType;
 	}
-	
-	
+
+	public double getOrbitDistance() {
+		return orbitDistance;
+	}
+
+	public void setOrbitDistance(double orbitDistance) {
+		this.orbitDistance = orbitDistance;
+	}
+
+
 }

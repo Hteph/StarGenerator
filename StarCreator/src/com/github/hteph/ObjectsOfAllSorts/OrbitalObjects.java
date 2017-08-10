@@ -11,7 +11,7 @@ public class OrbitalObjects extends StellarObject {
 	private double orbitDistance;
 	private double orbitaleccentricity;
 	private char orbitalObjectClass;
-	private SpaceObjectsInterface orbitingAround;
+	private StellarObject orbitingAround;
 	
 	
 	
@@ -35,7 +35,7 @@ public class OrbitalObjects extends StellarObject {
 	}
 
 
-	public SpaceObjectsInterface getOrbitingAround() {
+	public StellarObject getOrbitingAround() {
 		return orbitingAround;
 	}
 	

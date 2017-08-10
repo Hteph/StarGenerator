@@ -1,6 +1,6 @@
 package com.github.hteph.ObjectsOfAllSorts;
 
-public abstract class StellarObject implements SpaceObjectsInterface {
+public abstract class StellarObject {
 	
 	private String name;
 	private String description;
@@ -21,13 +21,13 @@ public abstract class StellarObject implements SpaceObjectsInterface {
 	
 	
 
-	@Override
+
 	public String getName() {
 	
 		return name;
 	}
 	
-	@Override
+
 	public String getDescription() {
 		return description;		
 	}
