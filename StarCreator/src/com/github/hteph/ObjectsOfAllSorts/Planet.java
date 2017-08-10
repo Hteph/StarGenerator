@@ -2,7 +2,7 @@ package com.github.hteph.ObjectsOfAllSorts;
 
 import java.util.ArrayList;
 
-public class Planet {
+public class Planet extends OrbitalObjects {
 
 	private String name;
 	private String description;
@@ -36,9 +36,9 @@ public class Planet {
 	private String lifeType;
 
 	// Constructor ----------------------------------------------
-	public Planet(String name, String description) {
-		this.name = name;
-		this.description = description;
+	public Planet(String name, String description, double orbitDistance, StellarObject orbitingAround) {
+		super(name, description, orbitDistance, orbitingAround);
+
 
 	}
 	//Methods --------------------------------------------------

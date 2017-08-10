@@ -2,8 +2,8 @@ package com.github.hteph.ObjectsOfAllSorts;
 
 public abstract class StellarObject {
 	
-	private String name;
-	private String description;
+	protected String name;
+	protected String description;
 	protected double mass;
 
 

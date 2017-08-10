@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.github.hteph.ObjectsOfAllSorts.AmosphericGases;
+import com.github.hteph.ObjectsOfAllSorts.OrbitalObjects;
 import com.github.hteph.ObjectsOfAllSorts.Planet;
 import com.github.hteph.ObjectsOfAllSorts.Star;
 import com.github.hteph.ObjectsOfAllSorts.StellarObject;
@@ -18,57 +19,59 @@ import com.github.hteph.Utilities.Dice;
 public class GenerateTerrestrialPlanet {
 
 
-	private double mass;
-	private double radius;
-	private double gravity;
-	private double density;
-	private double orbitalPeriod; //in earth years
-	private double axialTilt;
-	private double eccentricity;
-	private boolean tidelocked = false;
-	private double rotationalPeriod;
-	private double tectonicActivity;
-	private String tectonicCore;
-	private double magneticField;
-	private int baseTemperature;
-	private String hydrosphereDescription;
-	private int hydrosphere;
-	private int waterVaporFactor;
-	private ArrayList<AmosphericGases> atmoshericComposition = new ArrayList<AmosphericGases>();
-	private double atmoPressure;
-	private double albedo;
-	private double greenhouseFactor;
-	private double surfaceTemp;
-	private String atmoModeration ="Average";
-	private double[] rangeBandTemperature =new double[10];
-	private double[] rangeBandTempSummer =new double[10];
-	private double[] rangeBandTempWinter =new double[10];
-	private double nightTempMod;
-	private double dayTempMod;
-	private boolean InnerZone = false;
-	private String tectonicActivityGroup;
-	private double orbitalInclination;
-	private boolean boilingAtmo =false;
-	private boolean hasGaia;
-	private String lifeType;
 
 
-	public Planet Generator(String name, String description, double orbitDistance, char orbitalObjectClass, Star orbitingAround) {
+
+	public static OrbitalObjects Generator(String name, String description, double orbitDistance, char orbitalObjectClass, Star orbitingAround) {
 		
-		Planet planet = new Planet (name, description);
+		double mass;
+		int radius;
+		double gravity;
+		double density;
+		double orbitalPeriod; //in earth years
+		double axialTilt;
+		double eccentricity;
+		boolean tidelocked = false;
+		double rotationalPeriod;
+		double tectonicActivity;
+		String tectonicCore;
+		double magneticField;
+		int baseTemperature;
+		String hydrosphereDescription;
+		int hydrosphere;
+		int waterVaporFactor;
+		ArrayList<AmosphericGases> atmoshericComposition = new ArrayList<AmosphericGases>();
+		double atmoPressure;
+		double albedo;
+		double greenhouseFactor;
+		double surfaceTemp;
+		String atmoModeration = "No";
+		double[] rangeBandTemperature =new double[10];
+		double[] rangeBandTempSummer =new double[10];
+		double[] rangeBandTempWinter =new double[10];
+		double nightTempMod;
+		double dayTempMod;
+		boolean InnerZone = false;
+		String tectonicActivityGroup;
+		double orbitalInclination;
+		boolean boilingAtmo =false;
+		boolean hasGaia;
+		String lifeType;
+
+		Planet planet = new Planet (name, description, orbitDistance, orbitingAround);
 
 		double snowLine = 5 * Math.pow(orbitingAround.getLumosity(), 0.5);
 		if(orbitDistance<snowLine) InnerZone=true;
 		planet.setOrbitDistance(orbitDistance);
-		
+
 // size may not be all, but here it is set
 
 		int a=900;
 		if(orbitalObjectClass=='j') a=20;
 		radius = (Dice.d6()+Dice.d6())*a;
-		
+
 		planet.setRadius((int)radius);
-		
+
 
 //density
 
@@ -80,12 +83,12 @@ public class GenerateTerrestrialPlanet {
 		mass =Math.pow(radius/6380,3)*density;
 		gravity = mass/Math.pow((radius/6380),2);
 		orbitalPeriod = Math.pow(Math.pow(orbitDistance,3)/orbitingAround.getMass(),0.5); //in earth years
-		
+
 		planet.setMass(mass);
 		planet.setDensity(density);
 		planet.setGravity(gravity);
 		planet.setOrbitalPeriod(orbitalPeriod);
-		
+
 //Eccentricity and Inclination
 
 		int eccentryMod=1;
@@ -93,11 +96,11 @@ public class GenerateTerrestrialPlanet {
 		eccentricity=eccentryMod*(Dice.d6()-1)*(Dice.d6()-1)/(100*Dice.d6());
 		axialTilt = (Dice.d6()-1)+(Dice.d6()-1)/Dice.d6();
 		orbitalInclination = eccentryMod*(Dice.d6()+Dice.d6())/(1+mass/10);	
-		
+
 		planet.setEccentricity(eccentricity);
 		planet.setAxialTilt(axialTilt);
 		planet.setOrbitalInclination(orbitalInclination);
-		
+
 // TODO tidelocked or not should take into consideration moons too, generate moons here!
 
 		double tidalForce = orbitingAround.getMass()*26640000/Math.pow(orbitDistance*400,3);
@@ -111,20 +114,20 @@ public class GenerateTerrestrialPlanet {
 			rotationalPeriod = (Dice.d6()+Dice.d6()+8)*(1+0.1*(tidalForce*orbitingAround.getAge()-Math.pow(mass, 0.5)));
 			if(Dice.d6()<2) rotationalPeriod=Math.pow(rotationalPeriod,Dice.d6());
 		}
-		
+
 		planet.setRotationalPeriod(rotationalPeriod);
-		
+
 //TODO tectonics should include moons!
 
-		tectonicCore = findTectonicGroup();
+		tectonicCore = findTectonicGroup(InnerZone, density);
 		tectonicActivity = (5+Dice.d6()+Dice.d6()-2)*Math.pow(mass, 0.5)/orbitingAround.getAge();
 		tectonicActivity *=(1+0.5*tidalForce);
-		tectonicActivityGroup = findTectonicActivityGroup();
-		
+		tectonicActivityGroup = findTectonicActivityGroup(tectonicActivity);
+
 		planet.setTectonicCore(tectonicCore);
 		planet.setTectonicActivityGroup(tectonicActivityGroup);
 		//ditching tectonicActivitynumber as it is a value of little interest.
-		
+
 //Magnetic field
 		if(tectonicCore.contains("metal")){
 			magneticField =10 * 1/( Math.sqrt(( rotationalPeriod / 24 ))) * Math.pow(density, 2) * Math.sqrt(mass) / orbitingAround.getAge();
@@ -133,86 +136,83 @@ public class GenerateTerrestrialPlanet {
 		}else{
 			magneticField = Dice.d6()/10;
 		}
-		
+
 		planet.setMagneticField(magneticField);
 
 //Temperature
 		baseTemperature = (int) (255/Math.sqrt((orbitDistance/Math.sqrt(orbitingAround.getLumosity()))));
 
 		//base temp is an value of little use beyond this genertor and is not propagatet to the planet object
-		
+
 //Hydrosphere
-		hydrosphereDescription = findHydrosphereDescription();
-		hydrosphere = findTheHydrosphere();
+		hydrosphereDescription = findHydrosphereDescription(InnerZone, baseTemperature);
+		hydrosphere = findTheHydrosphere(hydrosphereDescription, radius);
 		if(hydrosphereDescription.equals("Liquid") || hydrosphereDescription.equals("Ice Sheet")){
 			waterVaporFactor = Math.max(0, (baseTemperature-240)/100 * hydrosphere * (Dice.d6()+Dice.d6()-1));
 		}else{
 			waterVaporFactor=0;
 		}
-		
+
 		planet.setHydrosphereDescription(hydrosphereDescription);
 		planet.setHydrosphere(hydrosphere);
-		
+
 //Atmoshperic details
-		atmoshericComposition = makeAtmoshpere(orbitingAround);
-		atmoPressure = findAtmoPressure();
-			
+		atmoshericComposition = makeAtmoshpere(orbitingAround, baseTemperature, tectonicActivityGroup, radius, gravity, boilingAtmo);
+		atmoPressure = findAtmoPressure(tectonicActivityGroup, hydrosphere, boilingAtmo, mass, atmoshericComposition);
+
 		double nicePressure = ((int)(atmoPressure*1000))/1000.0;
 		if(nicePressure==0 && atmoPressure>0) nicePressure=0.001;
-		
 
-		
+
+
 		planet.setAtmoPressure(nicePressure);
 
 		// The composition could be adjusted for the existence of life, so is set below
-		
+
 //Bioshpere
-		hasGaia = testLife();
-		if(hasGaia) lifeType = findLifeType();
+		hasGaia = testLife(baseTemperature, atmoPressure, hydrosphere, atmoshericComposition);
+		if(hasGaia) lifeType = findLifeType(atmoshericComposition);
 		else lifeType = "No indegious life";
-		if(lifeType.equals("Oxygen Breathing")) adjustForOxygen();
-		
-		albedo = findAlbedo();
-		double greenhouseGasEffect = findGreenhouseGases();
-		
+		if(lifeType.equals("Oxygen Breathing")) adjustForOxygen(atmoPressure, atmoshericComposition);
+
+		albedo = findAlbedo(InnerZone, atmoPressure, hydrosphere, hydrosphereDescription);
+		double greenhouseGasEffect = findGreenhouseGases(atmoshericComposition, atmoPressure);
+
 		greenhouseFactor =  1 + Math.sqrt(atmoPressure) *0.01 * (Dice.d6()+Dice.d6()-1) + Math.sqrt(greenhouseGasEffect) * 0.1 + waterVaporFactor * 0.1;
-		
+
 		//TODO Here adding some Gaia moderation factor (needs tweaking probably) moving a bit more towards water/carbon ideal
 		if (lifeType.equals("Oxygen Breathing") && baseTemperature>350) greenhouseFactor *=0.9;
 		if (lifeType.equals("Oxygen Breathing") && baseTemperature<250) greenhouseFactor *=1.1;
 
 		// My take on the effect of geenhouse and albdo on temperature max planerary temp is 1000 and the half point is 400
-		
-		
+
+
 		if(hasGaia ) surfaceTemp = 400*(baseTemperature*albedo*greenhouseFactor)/(350+baseTemperature*albedo*greenhouseFactor);
 		else if( atmoPressure>0) surfaceTemp = 1000*(baseTemperature*albedo*greenhouseFactor)/(400+baseTemperature*albedo*greenhouseFactor);
 		else surfaceTemp= baseTemperature* albedo*greenhouseFactor;
-			
-			
+
+
 		planet.setAtmoshericComposition(atmoshericComposition);
 		planet.setLifeType(lifeType);
 		planet.setSurfaceTemp((int)surfaceTemp);
-		
+
 //Climate
-		setAllKindOfLocalTemperature(); // sets all the temperature stuff from axial tilt etc etc
-		
+		setAllKindOfLocalTemperature(planet, atmoPressure,hydrosphere,rotationalPeriod, 
+				axialTilt, atmoModeration, surfaceTemp, orbitalPeriod); // sets all the temperature stuff from axial tilt etc etc
+
 		//TODO Weather and day night temp cycle
-		
-		planet.setRangeBandTemperature(rangeBandTemperature);
-		planet.setRangeBandTempSummer(rangeBandTempSummer);
-		planet.setRangeBandTempWinter(rangeBandTempWinter);
-		
-		
+
+
 // and here we return the result	
-		
-		return planet;
+
+		return (OrbitalObjects) planet;
 	}
 // Inner methods -------------------------------------------------------------------------------------------------	
 
 
-	private void adjustForOxygen() {
+	private static void adjustForOxygen(double atmoPressure, ArrayList<AmosphericGases> atmoshericComposition) {
 		boolean substitutionMade =false;
-		
+
 		int oxygenMax = (int)Math.max(Dice.d6(),Math.min(100/atmoshericComposition.size(),((Dice.d6()+Dice.d6()+Dice.d6())*2/atmoPressure)));
 
 		System.out.println("oxygenmax ="+oxygenMax);
@@ -238,7 +238,7 @@ public class GenerateTerrestrialPlanet {
 		}
 	}
 
-	private String findLifeType() {
+	private static String findLifeType(ArrayList<AmosphericGases> atmoshericComposition) {
 		String tempLifeType = "Oxygen Breathing";
 		for(int i=0;i<atmoshericComposition.size();i++){
 			if(atmoshericComposition.get(i).getName().equals("NH3")) tempLifeType = "Amonnia Breathing";
@@ -248,30 +248,39 @@ public class GenerateTerrestrialPlanet {
 		return tempLifeType;
 	}
 
-/**
- * Method to set the temperature of the latitude range bands and the day/night variation
- */
-	
+	/**
+	 * Method to set the temperature of the latitude range bands and the day/night variation
+	 * @param atmoPressure 
+	 * @param hydrosphere 
+	 * @param rotationalPeriod 
+	 * @param axialTilt 
+	 * @param atmoModeration 
+	 * @param surfaceTemp 
+	 * @param orbitalPeriod 
+	 */
+
 	/*TODO 
 	 * great season variations from the orbital eccentricity and multiple stars system
 	 * day night variation estimation, is interesting for worlds with short year/long days
 	 */
-	
-	private void setAllKindOfLocalTemperature() {
-		
+
+	private static void setAllKindOfLocalTemperature(Planet planet, double atmoPressure, int hydrosphere, 
+			double rotationalPeriod, double axialTilt, Object atmoModeration, double surfaceTemp, 
+			double orbitalPeriod) {
+
 		double[][] temperatureRangeBand= new double[][]{ // First is Low Moderation atmos, then Average etc
 			{1.10, 1.07, 1.5, 1.03, 1.00, 0.97, 0.93, 0.87, 0.78, 0.68},
 			{1.05, 1.04, 1.03, 1.02, 1.00, 0.98, 0.95, 0.90, 0.82, 0.75},
 			{1.02, 1.02, 1.02, 1.01, 1.00, 0.99, 0.98, 0.95, 0.91, 0.87},
 			{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
 		};
-		
+
 		double[] summerTemperature = new double[10];
 		double[] winterTemperature = new double[10];
 		double[] latitudeTemperature = new double[10];
 		int index = 0;
 		int testModeration=0;						
-		
+
 		testModeration = (int) ((hydrosphere -60)/10);
 		testModeration =(atmoPressure<0.1)?-3:1;
 		testModeration =(int) atmoPressure;
@@ -283,45 +292,45 @@ public class GenerateTerrestrialPlanet {
 		atmoModeration = (testModeration>2)?"High":"Average";
 		if(atmoPressure==0)atmoModeration="No";
 		if(atmoPressure>10)atmoModeration="Extreme";
-		
+
 		if(atmoModeration.equals("High")) index =2;
 		else if(atmoModeration.equals("Average")) index =1;
 		else if (atmoModeration.equals("Extreme")) index = 3;
-		
+
 		for(int i=0;i<10;i++){
 			latitudeTemperature[i] = temperatureRangeBand[index][i]*surfaceTemp;
 		}
-		
+
 		for(int i=0;i<10;i++){
-			
+
 			double seasonEffect = 1;
 			int axialTiltEffect = (int) (axialTilt/10);
 			int summer = Math.max(0, i-axialTiltEffect);
 			int winter =Math.min(9, i+axialTiltEffect);
-			
+
 			if(i<3 && axialTiltEffect<4) seasonEffect *= 0.75;
 			if(i>8 && axialTiltEffect>3) seasonEffect *= 2;
 			if(orbitalPeriod<0.25 && !atmoModeration.equals("Low"))	seasonEffect *= 0.75;
 			if(orbitalPeriod>3 && !atmoModeration.equals("High") && axialTilt>40)	seasonEffect *= 1.5;
-			
+
 			summerTemperature[i]=(latitudeTemperature[summer]-latitudeTemperature[i])*seasonEffect;
 			winterTemperature[i]=(latitudeTemperature[winter]-latitudeTemperature[i])*seasonEffect;
 		}
+
+
+
+		planet.setRangeBandTemperature(latitudeTemperature);
+		planet.setRangeBandTempSummer(summerTemperature);
+		planet.setRangeBandTempWinter(winterTemperature);
+
 		
-		
-		
-		 rangeBandTemperature =latitudeTemperature;
-		 rangeBandTempSummer =summerTemperature;
-		 rangeBandTempWinter =winterTemperature;
-		
-		 
 
 	}
 	/*TODO
 	 * This should be reworked (in conjuction with atmo) to remove CL and F from naturally occuring and instead
 	 * treat them similar to Oxygen. Also the Ammonia is dependent on free water as written right now
 	 */
-	private boolean testLife() {
+	private static boolean testLife(int baseTemperature, double atmoPressure, int hydrosphere, ArrayList<AmosphericGases> atmoshericComposition) {
 
 		double lifeIndex = 0;
 		if(baseTemperature<100 || baseTemperature>450) {
@@ -332,7 +341,7 @@ public class GenerateTerrestrialPlanet {
 			lifeIndex +=3;
 		}
 		System.out.println("Temp Lifeindex= "+lifeIndex);
-		
+
 		if (atmoPressure<0.1){
 			lifeIndex -=10;
 		}else if((atmoPressure>5)){
@@ -353,7 +362,7 @@ public class GenerateTerrestrialPlanet {
 		return (lifeIndex<1)?false:true;
 	}
 
-	private double findGreenhouseGases() {
+	private static double findGreenhouseGases(ArrayList<AmosphericGases> atmoshericComposition, double atmoPressure) {
 		double tempGreenhouseGasEffect = 0;
 		for(int i= 0; i<atmoshericComposition.size();i++){
 			if(atmoshericComposition.get(i).getName().equals("CO2")) tempGreenhouseGasEffect += atmoshericComposition.get(i).getPercentageInAtmo()*atmoPressure;
@@ -370,7 +379,7 @@ public class GenerateTerrestrialPlanet {
 	}
 
 
-	private double findAlbedo() {
+	private static double findAlbedo(boolean InnerZone, double atmoPressure, int hydrosphere, Object hydrosphereDescription) {
 		double tempAlbedo=1;
 		int randAlbedo=Dice.d6()+Dice.d6();
 
@@ -420,8 +429,8 @@ public class GenerateTerrestrialPlanet {
 		return tempAlbedo;
 	}
 
-	private double findAtmoPressure() {
-		
+	private static double findAtmoPressure(String tectonicActivityGroup, int hydrosphere, boolean boilingAtmo, double mass, ArrayList<AmosphericGases> atmoshericComposition) {
+
 		// TODO redo this with a better algoritm, binary search and so on so on
 		double pressure;
 		int mod=0;
@@ -461,7 +470,7 @@ public class GenerateTerrestrialPlanet {
 		return pressure;
 	}
 
-	private ArrayList<AmosphericGases> makeAtmoshpere(Star star) {
+	private static ArrayList<AmosphericGases> makeAtmoshpere(Star star, int baseTemperature, String tectonicActivityGroup, double radius, double gravity, boolean boilingAtmo) {
 
 		Set<String> makeAtmoshpere =new TreeSet<String>();
 		ArrayList<AmosphericGases> atmoArray = new ArrayList<AmosphericGases>();
@@ -722,16 +731,16 @@ public class GenerateTerrestrialPlanet {
 				percentage -=part[i];
 			}
 			part[0] +=percentage;
-			
+
 			ArrayList<String> randGas = new ArrayList<>();
-			
+
 			Iterator<String> it = makeAtmoshpere.iterator();
 			while(it.hasNext()){			
 				randGas.add(it.next());
 			}
 
 			Collections.shuffle(randGas);
-			
+
 			for(int i = 0; i<part.length;i++){
 				atmoArray.add(new AmosphericGases(randGas.get(i), part[i]));	
 			}
@@ -741,7 +750,7 @@ public class GenerateTerrestrialPlanet {
 		return atmoArray;
 	}
 
-	private int findTheHydrosphere() {
+	private static int findTheHydrosphere(Object hydrosphereDescription, int radius) {
 		int tempHydro=0;
 		if(hydrosphereDescription.equals("Liquid") || hydrosphereDescription.equals("Ice Sheet")){
 			if(radius<2000){
@@ -841,7 +850,7 @@ public class GenerateTerrestrialPlanet {
 		return tempHydro;
 	}
 
-	private String findHydrosphereDescription() {
+	private static String findHydrosphereDescription(boolean InnerZone, int baseTemperature) {
 		String tempHydroD;
 		if (!InnerZone){
 			tempHydroD="Crustal";
@@ -857,7 +866,7 @@ public class GenerateTerrestrialPlanet {
 		return tempHydroD;
 	}
 
-	private String findTectonicActivityGroup() {
+	private static String findTectonicActivityGroup(double tectonicActivity) {
 
 		String tempTectonicActivityGroup;
 
@@ -974,7 +983,7 @@ public class GenerateTerrestrialPlanet {
 		return tempTectonicActivityGroup;
 	}
 
-	private String findTectonicGroup() {
+	private static String findTectonicGroup(boolean InnerZone, double density) {
 
 		String tempTectonics;
 		if(InnerZone){

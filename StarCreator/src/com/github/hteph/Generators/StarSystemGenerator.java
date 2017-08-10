@@ -21,7 +21,7 @@ public class StarSystemGenerator  {
 		double snowLine = 5 * Math.pow(star.getLumosity(), 0.5);
 		double outerLimit = 40 * star.getMass();
 		ArrayList<StellarObject> starSystemList = new ArrayList<>();
-		
+
 		starSystemList.add(0,star);
 
 		//how many orbits?
@@ -48,8 +48,8 @@ public class StarSystemGenerator  {
 		if(Dice.d6()<6){
 			for(int i=numberOfOrbits;i>0;i--) {
 				if(orbitalDistancesArray[i]<snowLine){
-					orbitalObjectBasicList[i]='D';
-					if(Dice.d6()<6 && i>0) orbitalObjectBasicList[i-1]='A';
+					orbitalObjectBasicList[i+1]='J';
+					if(Dice.d6()<6) orbitalObjectBasicList[i]='A';
 					break;
 				}
 			}
@@ -57,95 +57,102 @@ public class StarSystemGenerator  {
 
 
 		//General orbit content
-			for(int i=0;i<numberOfOrbits;i++) {
+		for(int i=0;i<numberOfOrbits;i++) {
 
-				if(orbitalDistancesArray[i]>outerLimit || orbitalDistancesArray[i]<innerLimit) {
-					// Do nothing
-				}else if(orbitalDistancesArray[i]<snowLine){
-					orbitalObjectBasicList[i]=generateInnerObject();
-				}else{
-					orbitalObjectBasicList[i]=generateOuterObject();
-				}
+			if(orbitalDistancesArray[i]>outerLimit || orbitalDistancesArray[i]<innerLimit) {
+				// Do nothing
+			}else if(orbitalDistancesArray[i]<snowLine){
+				if(orbitalObjectBasicList[i]=='-') orbitalObjectBasicList[i]=generateInnerObject();
+			}else{
+				if(orbitalObjectBasicList[i]=='-') orbitalObjectBasicList[i]=generateOuterObject();
+			}
 
+		}
+
+		//Detailed bodies
+
+		for(int i=0;i<numberOfOrbits;i++){
+			switch (orbitalObjectBasicList[i]) {
+			case 'j':
+
+				break;
+			case 'J':
+
+				break;
+			case 't':case 'T':case 'C':
+				
+				starSystemList.add(GenerateTerrestrialPlanet.Generator("A Planet", "Big and round", orbitalDistancesArray[i], orbitalObjectBasicList[i], star));
+				break;
+
+			case 'c':
+				break;
+				
+			case 'a':
+				break;
+
+			case 'A':
+				starSystemList.add(GenerateAsteroidBelt.Generator("Asterioidbelt "+i, "A bunch of blocks", i, star, orbitalObjectBasicList, orbitalDistancesArray));
+				break;
+
+			default:
+				//Do nothing (probably 'E')
+				break;
 			}
-			
-			//Detailed bodies
-			
-//			for(int i=0;i<numberOfOrbits;i++){
-//				switch (orbitalObjectBasicList[i]) {
-//				case value:
-//					
-//					break;
-//				case value:
-//					
-//					break;
-//				case value:
-//					
-//					break;
-//				case value:
-//					
-//					break;
-//				case value:
-//					
-//					break;
-//				default:
-//					//Do nothing (probably 'E')
-//					break;
-//				}
-			
-			return null;
-			}
-			
-			
-			
-			
+		}
+
+		return starSystemList;
+	}
+
+
+
+
 
 	//		return orbitalObjectList;
-	
+
 
 
 // internal methods
-		private char generateOuterObject() {
+	private char generateOuterObject() {
 
-			switch (Dice.d6()+Dice.d6()+Dice.d6()) {
-			case 3:case 4:
-				return 'j';
-			case 5:	case 6:case 7:
-				return 'c';
-			case 8:case 9:case 10:
-				return 't';
-			case 11:case 12:case 13:case 14:
-				return 'T';
-			case 15:case 16:
-				return 'A';
-			case 17:
-				return 'C';
-			case 18:
-				return 'J';
-			default:
-				return 'E';
-			}
+		switch (Dice._3d6()) {
+		case 3:case 4:
+			return 'j';// Small jovian
+		case 5:	case 6:case 7:
+			return 'c'; //Catched asteroid
+		case 8:case 9:case 10:
+			return 't';//small terrestial planet
+		case 11:case 12:case 13:case 14:
+			return 'T';//terrestial planet
+		case 15:case 16:
+			return 'A';//Asteroid belt
+		case 17:
+			return 'C';//Captured planet
+		case 18:
+			return 'J';//Super jovian
+		default:
+			return 'E';// Empty orbit
 		}
-
-		private char generateInnerObject() {
-			switch (Dice.d6()+Dice.d6()+Dice.d6()) {
-			case 3:case 4:
-				return 'A';
-			case 5:	case 6:case 7:
-				return 'T';
-			case 8:case 9:case 10:
-				return 'j';
-			case 11:case 12:case 13:case 14:
-				return 'J';
-			case 15:case 16:
-				return 'T';
-			case 17:
-				return 'C';
-			case 18:
-				return 'c';
-			default:
-				return 'E';
-			}
-		}
-
 	}
+
+	private char generateInnerObject() {
+		switch (Dice._3d6()) {
+		case 3:case 4:
+			return 'A'; //Asteroid belt
+		case 5:	case 6:case 7:
+			return 'T'; //terrestial planet
+		case 8:case 9:case 10:
+			return 'j'; // Small jovian
+		case 11:case 12:case 13:case 14:
+			return 'J'; //Super jovian
+		case 15:case 16:
+			return 'T'; //Terrstial planet
+		case 17:
+			return 'C'; //Captured planet
+		case 18:
+			return 'c'; // captured asteroid
+		default:
+			return 'E'; // Empty orbit
+		}
+	}
+
+}

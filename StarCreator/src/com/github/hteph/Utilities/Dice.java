@@ -14,6 +14,12 @@ public class Dice {
 	
 	}
 	
+	public static int _3d6(){
+		
+	return d6()+d6()+d6();	
+	
+	}
+	
 	public static int d10(){
 		int a =(int)(1+Math.random()*10);
 

@@ -1,25 +1,22 @@
 package com.github.hteph.ObjectsOfAllSorts;
 
-import java.util.ArrayList;
+public class AsteroidBelt extends OrbitalObjects{
 
-public class AsteroidBelt {
 
-	private String name;
-	private String description;
+	public AsteroidBelt(String name, String description, double orbitDistance, StellarObject orbitingAround) {
+		super(name, description, orbitDistance, orbitingAround);
+		// TODO Auto-generated constructor stub
+	}
+
 	private double mass;	
-	private double orbitDistance;
 	private double eccentricity;
 	private String asterioidBeltType;
 	private double asteroidBeltWidth;
 
 
-	// Constructor ----------------------------------------------
-	public AsteroidBelt(String name, String description, double orbitDistance) {
-		this.name = name;
-		this.description = description;
-		this.orbitDistance = orbitDistance;
 
-	}
+	// Constructor ----------------------------------------------
+
 	//Methods --------------------------------------------------
 
 	@Override
