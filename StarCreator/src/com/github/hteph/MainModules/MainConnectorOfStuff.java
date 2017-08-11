@@ -13,11 +13,11 @@ public class MainConnectorOfStuff {
 		
 		StarGenerator testGenerator = new StarGenerator();
 		
-		GenerateTerrestrialPlanet testPlanetGeneration = new GenerateTerrestrialPlanet();
+		
 			
 		StellarObject testStar = testGenerator.Generator();
 		
-		Planet testPlanet = testPlanetGeneration.Generator("Testus", "SomethingSomething", 1, 'J', (Star) testStar);
+		Planet testPlanet = (Planet) GenerateTerrestrialPlanet.Generator("Testus", "SomethingSomething", 1, 'J', (Star) testStar);
 		
 		System.out.println(testStar.toString());
 		System.out.println(testPlanet.toString());
